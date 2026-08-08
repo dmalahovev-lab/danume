@@ -11,7 +11,7 @@
     
     <style>
         /* ============================================
-           ПОЛНЫЙ НАБОР СТИЛЕЙ — КАК В TELEGRAM
+           ВСЕ СТИЛИ (как в Telegram)
            ============================================ */
         * {
             margin: 0;
@@ -52,7 +52,7 @@
         }
 
         /* ============================================
-           ЭКРАН ВХОДА
+           ЭКРАН ВХОДА / РЕГИСТРАЦИИ
            ============================================ */
         .login-container {
             display: flex;
@@ -68,7 +68,7 @@
             border-radius: 20px;
             border: 1px solid var(--border-color);
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
         }
 
         .login-box h1 {
@@ -105,6 +105,7 @@
             font-weight: 600;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
         }
         .login-box button:hover { background: var(--accent-hover); }
 
@@ -114,11 +115,23 @@
             color: var(--text-secondary);
             cursor: pointer;
             font-size: 13px;
+            transition: color 0.2s;
         }
         .login-box .switch-mode:hover { color: var(--accent-color); }
 
-        .login-box .error { color: #ef4444; text-align: center; margin-top: 10px; font-size: 13px; min-height: 20px; }
-        .login-box .success { color: #22c55e; text-align: center; margin-top: 10px; font-size: 13px; }
+        .login-box .error {
+            color: #ef4444;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+            min-height: 20px;
+        }
+        .login-box .success {
+            color: #22c55e;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+        }
         .hidden { display: none !important; }
 
         /* ============================================
@@ -132,9 +145,6 @@
             overflow: hidden;
         }
 
-        /* ============================================
-           БОКОВАЯ ПАНЕЛЬ
-           ============================================ */
         .sidebar {
             width: 360px;
             min-width: 360px;
@@ -173,6 +183,7 @@
             cursor: pointer;
             padding: 6px 10px;
             border-radius: 10px;
+            transition: all 0.2s;
         }
         .sidebar-actions button:hover { background: var(--hover-color); color: var(--text-primary); }
 
@@ -218,19 +229,22 @@
             gap: 12px;
             padding: 8px 16px;
             cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.15s;
         }
         .search-result-item:hover { background: var(--hover-color); }
         .search-result-item .avatar {
-            width: 36px; height: 36px; border-radius: 50%;
+            width: 40px; height: 40px; border-radius: 50%;
             background: var(--accent-color);
             display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 600; font-size: 14px; text-transform: uppercase;
+            color: white; font-weight: 600; font-size: 16px; text-transform: uppercase;
             overflow: hidden;
         }
         .search-result-item .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .search-result-item .info { flex: 1; }
         .search-result-item .info .name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
         .search-result-item .info .username { font-size: 12px; color: var(--text-secondary); }
+        .search-result-item .info .status { font-size: 11px; color: var(--online-color); }
 
         .chat-list {
             flex: 1;
@@ -266,18 +280,6 @@
             border-radius: 50%;
             border: 2px solid var(--bg-primary);
             box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
-        }
-        .chat-avatar .typing-dot {
-            position: absolute; bottom: 1px; right: 1px;
-            width: 12px; height: 12px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            border: 2px solid var(--bg-primary);
-            animation: pulse-dot 1s infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1); }
         }
 
         .chat-info { flex: 1; min-width: 0; }
@@ -429,9 +431,7 @@
             border-radius: 12px;
             margin-top: 4px;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        .message-text img:hover { transform: scale(1.02); }
 
         .message-meta {
             display: flex;
@@ -522,9 +522,6 @@
             display: flex; align-items: center; justify-content: center;
         }
         .input-tools button:hover { color: var(--accent-color); }
-        .input-tools button.active { color: var(--accent-color); background: var(--hover-color); }
-        .input-tools button.recording { color: #ef4444; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .input-wrapper {
             flex: 1;
@@ -617,37 +614,7 @@
         .info-profile .big-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .info-profile .info-name { font-size: 20px; font-weight: 700; color: var(--text-primary); }
         .info-profile .info-username { font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
-        .info-profile .info-bio { font-size: 14px; color: var(--text-secondary); margin-top: 8px; padding: 0 12px; }
-        .info-profile .info-status { font-size: 13px; color: var(--online-color); margin-top: 4px; }
-        .info-profile .info-joined { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-
-        .info-media { margin-top: 16px; }
-        .info-media-title {
-            font-size: 13px; font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .info-media-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-        }
-        .info-media-item {
-            aspect-ratio: 1;
-            border-radius: 8px;
-            background: var(--bg-secondary);
-            cursor: pointer;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: var(--text-secondary);
-        }
-        .info-media-item img { width: 100%; height: 100%; object-fit: cover; }
-        .info-media-item:hover { border-color: var(--accent-color); }
+        .info-profile .info-bio { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
 
         .info-stats {
             margin-top: 16px;
@@ -663,7 +630,7 @@
             border: 1px solid var(--border-color);
         }
         .info-stats .stat .number { font-size: 20px; font-weight: 700; color: var(--text-primary); }
-        .info-stats .stat .label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+        .info-stats .stat .label { font-size: 11px; color: var(--text-secondary); }
 
         /* ============================================
            КОНТЕКСТНОЕ МЕНЮ (ПКМ)
@@ -684,6 +651,7 @@
             padding: 8px 14px;
             cursor: pointer;
             border-radius: 10px;
+            transition: background 0.15s;
             font-size: 13px;
             color: var(--text-primary);
             display: flex;
@@ -697,7 +665,7 @@
         .context-menu-divider { height: 1px; background: var(--border-color); margin: 4px 8px; }
 
         /* ============================================
-           ПРОФИЛЬ (модалка)
+           ПРОФИЛЬ
            ============================================ */
         .profile-modal {
             display: none;
@@ -783,23 +751,6 @@
             width: 200px;
         }
         .profile-input:focus { border-color: var(--accent-color); }
-        .profile-input::placeholder { color: var(--text-secondary); }
-
-        .color-picker-small {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .color-option-small {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            flex-shrink: 0;
-        }
-        .color-option-small:hover { transform: scale(1.15); }
-        .color-option-small.selected { border-color: white; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
 
         .toggle {
             width: 44px; height: 24px;
@@ -896,13 +847,9 @@
         }
         .image-viewer .close-viewer:hover { opacity: 1; }
 
-        /* ============================================
-           АДАПТИВ
-           ============================================ */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-primary); }
 
         @media (max-width: 768px) {
             .sidebar {
@@ -926,7 +873,6 @@
 
             .chat-header { padding: 10px 14px; min-height: 50px; }
             .chat-header-avatar { width: 34px; height: 34px; font-size: 14px; }
-            .chat-header-info h3 { font-size: 14px; }
             .message-wrapper { max-width: 80%; }
             .message-bubble { padding: 6px 12px; }
             .message-text { font-size: 13px; }
@@ -956,26 +902,34 @@
                 padding: 4px 8px;
             }
         }
-
-        @media (min-width: 1400px) {
-            .sidebar { width: 400px; min-width: 400px; }
-            .info-panel.open { width: 380px; min-width: 380px; }
-        }
     </style>
 </head>
 <body>
 
 <!-- ==========================================
-   ЭКРАН ВХОДА
+   ЭКРАН ВХОДА / РЕГИСТРАЦИИ
 ========================================== -->
 <div class="login-container" id="loginContainer">
     <div class="login-box">
         <h1><i class="fas fa-comment-dots"></i> Мессенджер</h1>
+        
+        <!-- Форма входа -->
         <div id="loginForm">
             <input type="text" id="loginUsername" placeholder="Имя пользователя" autocomplete="username">
-            <input type="text" id="loginDisplayName" placeholder="Отображаемое имя (опционально)">
+            <input type="password" id="loginPassword" placeholder="Пароль" autocomplete="current-password">
             <button onclick="login()">Войти</button>
+            <div class="switch-mode" onclick="showRegister()">Нет аккаунта? Зарегистрироваться</div>
             <div class="error" id="loginError"></div>
+        </div>
+        
+        <!-- Форма регистрации -->
+        <div id="registerForm" class="hidden">
+            <input type="text" id="regUsername" placeholder="Имя пользователя" autocomplete="username">
+            <input type="text" id="regDisplayName" placeholder="Отображаемое имя">
+            <input type="password" id="regPassword" placeholder="Пароль" autocomplete="new-password">
+            <button onclick="register()">Зарегистрироваться</button>
+            <div class="switch-mode" onclick="showLogin()">Уже есть аккаунт? Войти</div>
+            <div class="error" id="regError"></div>
         </div>
     </div>
 </div>
@@ -989,13 +943,12 @@
             <h2><i class="fas fa-comment-dots"></i> Мессенджер</h2>
             <div class="sidebar-actions">
                 <button onclick="showProfileSettings()" title="Профиль"><i class="fas fa-user-circle"></i></button>
-                <button onclick="startNewChat()" title="Новый чат"><i class="fas fa-pen"></i></button>
                 <button onclick="logout()" title="Выйти"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
 
         <div class="search-box">
-            <input type="text" placeholder="Поиск" id="searchInput">
+            <input type="text" placeholder="Поиск пользователей..." id="searchInput" oninput="onSearch()">
             <div class="search-results" id="searchResults"></div>
         </div>
 
@@ -1027,10 +980,6 @@
                 </div>
             </div>
 
-            <div class="typing-indicator" id="typingIndicator">
-                <span id="typingName">Кто-то</span> печатает...
-            </div>
-
             <div class="messages-container" id="messagesContainer">
                 <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
                     <i class="fas fa-comment" style="font-size:40px;opacity:0.2;margin-bottom:12px;display:block;"></i>
@@ -1041,14 +990,13 @@
 
             <div class="input-area" id="inputArea" style="display:none;">
                 <div class="input-tools">
-                    <button onclick="toggleEmoji()" title="Эмодзи" id="emojiBtn"><i class="far fa-smile"></i></button>
-                    <button onclick="toggleStickers()" title="Стикеры" id="stickersBtn"><i class="fas fa-sticky-note"></i></button>
+                    <button onclick="toggleEmoji()" title="Эмодзи"><i class="far fa-smile"></i></button>
                     <button onclick="document.getElementById('fileInput').click()" title="Прикрепить файл"><i class="fas fa-paperclip"></i></button>
                     <input type="file" id="fileInput" style="display:none" multiple accept="image/*,.pdf,.doc,.docx,.txt,.zip,.rar">
                 </div>
                 <div class="input-wrapper">
                     <textarea id="messageInput" rows="1" placeholder="Сообщение..." maxlength="4096"></textarea>
-                    <button class="send-btn" id="sendBtn" disabled><i class="fas fa-arrow-up"></i></button>
+                    <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
                 </div>
             </div>
         </div>
@@ -1069,15 +1017,7 @@
 </div>
 
 <!-- ==========================================
-   ПРОСМОТР ИЗОБРАЖЕНИЙ
-========================================== -->
-<div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
-    <button class="close-viewer" onclick="closeImageViewer()"><i class="fas fa-times"></i></button>
-    <img id="viewerImage" src="">
-</div>
-
-<!-- ==========================================
-   КОНТЕКСТНОЕ МЕНЮ
+   КОНТЕКСТНОЕ МЕНЮ (ПКМ)
 ========================================== -->
 <div class="context-menu" id="contextMenu">
     <div class="context-menu-item" onclick="contextReply()"><i class="fas fa-reply"></i> Ответить</div>
@@ -1089,6 +1029,14 @@
     <div class="context-menu-item" onclick="contextUnpin()" id="contextUnpin"><i class="fas fa-thumbtack"></i> Открепить</div>
     <div class="context-menu-divider"></div>
     <div class="context-menu-item danger" onclick="contextDelete()"><i class="fas fa-trash"></i> Удалить</div>
+</div>
+
+<!-- ==========================================
+   ПРОСМОТР ИЗОБРАЖЕНИЙ
+========================================== -->
+<div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
+    <button class="close-viewer" onclick="closeImageViewer()"><i class="fas fa-times"></i></button>
+    <img id="viewerImage" src="">
 </div>
 
 <!-- ==========================================
@@ -1131,17 +1079,6 @@
                 <div class="profile-item-left"><i class="fas fa-moon"></i><div class="info"><div class="title">Тёмная тема</div><div class="desc">Включить тёмную тему</div></div></div>
                 <div class="toggle" id="themeToggle" onclick="toggleThemeFromProfile()"><div class="toggle-thumb"></div></div>
             </div>
-            <div class="profile-item">
-                <div class="profile-item-left"><i class="fas fa-palette"></i><div class="info"><div class="title">Цвет акцентов</div><div class="desc">Выберите основной цвет</div></div></div>
-                <div class="color-picker-small" id="profileColorPicker">
-                    <div class="color-option-small" style="background:#7c3aed;" data-color="#7c3aed" onclick="selectColorFromProfile('#7c3aed')"></div>
-                    <div class="color-option-small" style="background:#ef4444;" data-color="#ef4444" onclick="selectColorFromProfile('#ef4444')"></div>
-                    <div class="color-option-small" style="background:#f59e0b;" data-color="#f59e0b" onclick="selectColorFromProfile('#f59e0b')"></div>
-                    <div class="color-option-small" style="background:#3b82f6;" data-color="#3b82f6" onclick="selectColorFromProfile('#3b82f6')"></div>
-                    <div class="color-option-small" style="background:#22c55e;" data-color="#22c55e" onclick="selectColorFromProfile('#22c55e')"></div>
-                    <div class="color-option-small" style="background:#ec4899;" data-color="#ec4899" onclick="selectColorFromProfile('#ec4899')"></div>
-                </div>
-            </div>
         </div>
         <button class="profile-save-btn" onclick="saveProfileChanges()">💾 Сохранить</button>
         <button class="profile-close-btn" onclick="closeProfile()">Закрыть</button>
@@ -1168,10 +1105,6 @@ let currentChatId = null;
 let isInfoOpen = false;
 let isMobileSidebarOpen = false;
 let isDarkTheme = false;
-let isEmojiOpen = false;
-let isStickersOpen = false;
-let editingMessageId = null;
-let replyingTo = null;
 let pusher = null;
 let channel = null;
 let allUsers = [];
@@ -1181,6 +1114,8 @@ let contextMessageId = null;
 let contextMessage = null;
 let toastTimeout = null;
 let isSending = false;
+let replyingTo = null;
+let editingMessageId = null;
 let settings = { accentColor: '#7c3aed' };
 let typingTimeout = null;
 
@@ -1188,8 +1123,10 @@ let typingTimeout = null;
 const $ = id => document.getElementById(id);
 const loginContainer = $('loginContainer');
 const loginForm = $('loginForm');
+const registerForm = $('registerForm');
 const appContainer = $('app');
 const loginError = $('loginError');
+const regError = $('regError');
 const messagesContainer = $('messagesContainer');
 const messageInput = $('messageInput');
 const sendBtn = $('sendBtn');
@@ -1197,8 +1134,6 @@ const chatList = $('chatList');
 const chatHeaderName = $('chatHeaderName');
 const chatHeaderStatus = $('chatHeaderStatus');
 const chatHeaderAvatar = $('chatHeaderAvatar');
-const emojiBtn = $('emojiBtn');
-const stickersBtn = $('stickersBtn');
 const fileInput = $('fileInput');
 const searchInput = $('searchInput');
 const searchResults = $('searchResults');
@@ -1210,28 +1145,73 @@ const imageViewer = $('imageViewer');
 const viewerImage = $('viewerImage');
 const profileModal = $('profileModal');
 const themeToggle = $('themeToggle');
-const typingIndicator = $('typingIndicator');
-const typingName = $('typingName');
 const contextMenu = $('contextMenu');
 const inputArea = $('inputArea');
 
 // ---------- АВТОРИЗАЦИЯ ----------
-async function login() {
-    const username = $('loginUsername').value.trim();
-    const displayName = $('loginDisplayName').value.trim() || username;
-    
-    if (!username) {
-        loginError.textContent = 'Введите имя пользователя';
+function showRegister() {
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+    loginError.textContent = '';
+    regError.textContent = '';
+}
+
+function showLogin() {
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+    loginError.textContent = '';
+    regError.textContent = '';
+}
+
+async function register() {
+    const username = $('regUsername').value.trim();
+    const displayName = $('regDisplayName').value.trim() || username;
+    const password = $('regPassword').value;
+
+    if (!username || !password) {
+        regError.textContent = 'Заполните все поля';
         return;
     }
-    
+
+    try {
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, displayName })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            regError.style.color = '#22c55e';
+            regError.textContent = '✅ Регистрация успешна! Войдите.';
+            showLogin();
+            $('loginUsername').value = username;
+        } else {
+            regError.style.color = '#ef4444';
+            regError.textContent = data.error || 'Ошибка регистрации';
+        }
+    } catch (error) {
+        regError.style.color = '#ef4444';
+        regError.textContent = 'Ошибка соединения с сервером';
+    }
+}
+
+async function login() {
+    const username = $('loginUsername').value.trim();
+    const password = $('loginPassword').value;
+
+    if (!username || !password) {
+        loginError.textContent = 'Введите имя и пароль';
+        return;
+    }
+
     try {
         const response = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, displayName })
+            body: JSON.stringify({ username, password })
         });
-        
+
         const data = await response.json();
         if (data.success) {
             currentUser = data.user;
@@ -1242,13 +1222,13 @@ async function login() {
             applyTheme();
             applyAccentColor();
             initPusher();
-            loadUsers();
-            loadChats();
-            
+            await loadUsers();
+            await loadChats();
             setupEventListeners();
+            
             showToast('🎉 Добро пожаловать!');
         } else {
-            loginError.textContent = data.error || 'Ошибка входа';
+            loginError.textContent = data.error || 'Неверный логин или пароль';
         }
     } catch (error) {
         loginError.textContent = 'Ошибка соединения с сервером';
@@ -1278,9 +1258,9 @@ function initPusher() {
     channel = pusher.subscribe(`private-user-${currentUser.id}`);
     
     channel.bind('new_message', (data) => {
+        console.log('📨 Новое сообщение:', data);
         if (data.chatId === currentChatId) {
-            // Удаляем временное сообщение
-            chatMessages = chatMessages.filter(m => !m.id.toString().startsWith('temp_'));
+            chatMessages = chatMessages.filter(m => !m.id?.toString().startsWith('temp_'));
             chatMessages.push(data);
             renderMessages();
         }
@@ -1305,10 +1285,13 @@ async function loadUsers() {
 async function loadChats() {
     try {
         const response = await fetch(`/api/chats/${currentUser.id}`);
-        allChats = await response.json();
+        const data = await response.json();
+        allChats = data || [];
         renderChatList();
     } catch (error) {
         console.error('Ошибка загрузки чатов:', error);
+        allChats = [];
+        renderChatList();
     }
 }
 
@@ -1319,7 +1302,7 @@ function renderChatList() {
             <div style="text-align:center;padding:40px 20px;color:var(--text-secondary);">
                 <i class="fas fa-inbox" style="font-size:28px;opacity:0.3;display:block;margin-bottom:10px;"></i>
                 <p>Нет чатов</p>
-                <p style="font-size:13px;">Создайте новый чат, нажав ✏️</p>
+                <p style="font-size:13px;">Найдите пользователя в поиске</p>
             </div>
         `;
         return;
@@ -1433,11 +1416,80 @@ function formatFileSize(bytes) {
     return (bytes / 1048576).toFixed(1) + ' MB';
 }
 
+// ---------- ПОИСК ПОЛЬЗОВАТЕЛЕЙ ----------
+async function onSearch() {
+    const query = searchInput.value.trim().toLowerCase();
+    searchResults.classList.remove('show');
+    
+    if (query.length === 0) return;
+    
+    // Загружаем свежий список пользователей
+    await loadUsers();
+    
+    const results = allUsers.filter(u => 
+        u.id !== currentUser.id && (
+            u.displayName.toLowerCase().includes(query) ||
+            u.username.toLowerCase().includes(query)
+        )
+    );
+    
+    if (results.length > 0) {
+        let html = '';
+        results.forEach(user => {
+            const existingChat = allChats.find(c => 
+                c.type === 'private' && 
+                c.participants?.includes(user.id) && 
+                c.participants?.includes(currentUser.id)
+            );
+            
+            html += `
+                <div class="search-result-item" onclick="${existingChat ? `switchChat('${existingChat.id}')` : `createChatWith('${user.id}')`}">
+                    <div class="avatar">${user.avatar || user.displayName[0]}</div>
+                    <div class="info">
+                        <div class="name">${escapeHtml(user.displayName)} ${user.online ? '🟣' : ''}</div>
+                        <div class="username">@${escapeHtml(user.username)}</div>
+                        <div class="status">${user.online ? 'Онлайн' : 'Не в сети'}</div>
+                    </div>
+                    ${existingChat ? '<i class="fas fa-check-circle" style="color:var(--accent-color);"></i>' : '<i class="fas fa-arrow-right" style="color:var(--text-secondary);"></i>'}
+                </div>
+            `;
+        });
+        searchResults.innerHTML = html;
+        searchResults.classList.add('show');
+    }
+}
+
+// ---------- СОЗДАНИЕ ЧАТА ----------
+async function createChatWith(userId) {
+    try {
+        const response = await fetch('/api/create-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId1: currentUser.id,
+                userId2: userId
+            })
+        });
+        
+        const chat = await response.json();
+        searchResults.classList.remove('show');
+        searchInput.value = '';
+        await loadChats();
+        switchChat(chat.id);
+        showToast('💬 Чат создан!');
+    } catch (error) {
+        showToast('❌ Ошибка создания чата');
+        console.error(error);
+    }
+}
+
 // ---------- ПЕРЕКЛЮЧЕНИЕ ЧАТА ----------
 async function switchChat(chatId) {
     currentChatId = chatId;
     inputArea.style.display = 'flex';
     sendBtn.disabled = true;
+    searchResults.classList.remove('show');
+    searchInput.value = '';
     
     const chat = allChats.find(c => c.id === chatId);
     if (chat) {
@@ -1451,8 +1503,6 @@ async function switchChat(chatId) {
                 avatar = otherUser.avatar || otherUser.displayName?.[0]?.toUpperCase() || 'А';
                 chatHeaderStatus.textContent = otherUser.online ? '🟣 Онлайн' : '⚪ Не в сети';
             }
-        } else {
-            chatHeaderStatus.textContent = `${chat.participants?.length || 0} участников`;
         }
         chatHeaderName.textContent = displayName;
         chatHeaderAvatar.innerHTML = avatar;
@@ -1464,6 +1514,8 @@ async function switchChat(chatId) {
         renderMessages();
     } catch (error) {
         console.error('Ошибка загрузки истории:', error);
+        chatMessages = [];
+        renderMessages();
     }
     
     renderChatList();
@@ -1483,7 +1535,7 @@ async function sendMessage() {
     isSending = true;
     
     try {
-        await fetch('/api/send-message', {
+        const response = await fetch('/api/send-message', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1494,24 +1546,30 @@ async function sendMessage() {
             })
         });
         
-        const tempMsg = {
-            id: 'temp_' + Date.now(),
-            chatId: currentChatId,
-            senderId: currentUser.id,
-            text: text,
-            timestamp: Date.now(),
-            status: 'sent'
-        };
-        chatMessages.push(tempMsg);
-        renderMessages();
-        
-        messageInput.value = '';
-        sendBtn.disabled = true;
-        replyingTo = null;
-        hideReplyIndicator();
-        autoResizeTextarea();
+        const data = await response.json();
+        if (data.success) {
+            const tempMsg = {
+                id: 'temp_' + Date.now(),
+                chatId: currentChatId,
+                senderId: currentUser.id,
+                text: text,
+                timestamp: Date.now(),
+                status: 'sent'
+            };
+            chatMessages.push(tempMsg);
+            renderMessages();
+            
+            messageInput.value = '';
+            sendBtn.disabled = true;
+            replyingTo = null;
+            hideReplyIndicator();
+            autoResizeTextarea();
+        } else {
+            showToast('❌ Ошибка отправки: ' + (data.error || 'неизвестная ошибка'));
+        }
     } catch (error) {
         showToast('❌ Ошибка отправки');
+        console.error('Send error:', error);
     }
     isSending = false;
 }
@@ -1557,58 +1615,13 @@ function sendFiles() {
     fileInput.value = '';
 }
 
-// ---------- СОЗДАНИЕ НОВОГО ЧАТА ----------
-async function startNewChat() {
-    const userList = allUsers.filter(u => u.id !== currentUser.id);
-    
-    if (!userList.length) {
-        showToast('Нет доступных пользователей');
-        return;
-    }
-    
-    let message = 'Выберите пользователя:\n\n';
-    userList.forEach((u, i) => {
-        message += `${i + 1}. ${u.displayName} (@${u.username}) ${u.online ? '🟣' : '⚪'}\n`;
-    });
-    message += '\nВведите номер:';
-    
-    const choice = prompt(message);
-    if (!choice) return;
-    
-    const index = parseInt(choice) - 1;
-    if (index < 0 || index >= userList.length) {
-        showToast('❌ Неверный выбор');
-        return;
-    }
-    
-    const selectedUser = userList[index];
-    
-    try {
-        const response = await fetch('/api/create-chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId1: currentUser.id,
-                userId2: selectedUser.id
-            })
-        });
-        
-        const chat = await response.json();
-        await loadChats();
-        switchChat(chat.id);
-        showToast(`💬 Чат с ${selectedUser.displayName} создан!`);
-    } catch (error) {
-        showToast('❌ Ошибка создания чата');
-    }
-}
-
-// ---------- КОНТЕКСТНОЕ МЕНЮ ----------
+// ---------- КОНТЕКСТНОЕ МЕНЮ (ПКМ) ----------
 function showContextMenu(x, y, msg) {
     const isOwn = msg.senderId === currentUser.id;
     const isPinned = msg.pinned || false;
     
-    contextMenu.style.left = x + 'px';
-    contextMenu.style.top = y + 'px';
+    contextMenu.style.left = Math.min(x, window.innerWidth - 240) + 'px';
+    contextMenu.style.top = Math.min(y, window.innerHeight - 200) + 'px';
     
     document.getElementById('contextEdit').style.display = isOwn ? 'flex' : 'none';
     document.getElementById('contextPin').style.display = !isPinned ? 'flex' : 'none';
@@ -1777,14 +1790,6 @@ function loadSettings() {
             settings = { ...settings, ...parsed };
         } catch (e) {}
     }
-    const savedColor = localStorage.getItem(`user_color_${currentUser?.id}`);
-    if (savedColor) {
-        settings.accentColor = savedColor;
-    }
-}
-
-function saveSettings() {
-    localStorage.setItem('messenger_settings', JSON.stringify(settings));
 }
 
 function applyTheme() {
@@ -1814,17 +1819,6 @@ function toggleThemeFromProfile() {
     showToast(isDarkTheme ? '🌙 Тёмная тема' : '☀️ Светлая тема');
 }
 
-function selectColorFromProfile(color) {
-    settings.accentColor = color;
-    localStorage.setItem(`user_color_${currentUser?.id}`, color);
-    applyAccentColor();
-    
-    document.querySelectorAll('#profileColorPicker .color-option-small').forEach(el => {
-        el.classList.toggle('selected', el.dataset.color === color);
-    });
-    showToast('🎨 Цвет обновлён');
-}
-
 // ---------- ПРОФИЛЬ ----------
 function showProfileSettings() {
     if (!currentUser) return;
@@ -1833,11 +1827,6 @@ function showProfileSettings() {
     document.getElementById('editDisplayName').value = currentUser.displayName || '';
     document.getElementById('editUsername').value = currentUser.username || '';
     document.getElementById('editBio').value = currentUser.bio || '';
-    
-    const currentColor = settings.accentColor || '#7c3aed';
-    document.querySelectorAll('#profileColorPicker .color-option-small').forEach(el => {
-        el.classList.toggle('selected', el.dataset.color === currentColor);
-    });
     
     themeToggle.classList.toggle('active', isDarkTheme);
     profileModal.classList.add('show');
@@ -1886,6 +1875,18 @@ function saveProfileChanges() {
     currentUser.displayName = displayName;
     currentUser.username = username;
     currentUser.bio = bio;
+    
+    // Обновляем на сервере
+    fetch('/api/update-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId: currentUser.id,
+            displayName: displayName,
+            username: username,
+            bio: bio
+        })
+    });
     
     showToast('✅ Профиль обновлён!');
     closeProfile();
@@ -1975,15 +1976,7 @@ document.addEventListener('keydown', (e) => {
 
 // ---------- ЭМОДЗИ ----------
 function toggleEmoji() {
-    isEmojiOpen = !isEmojiOpen;
-    emojiBtn.classList.toggle('active', isEmojiOpen);
-    showToast(isEmojiOpen ? '😊 Эмодзи открыты' : 'Эмодзи закрыты');
-}
-
-function toggleStickers() {
-    isStickersOpen = !isStickersOpen;
-    stickersBtn.classList.toggle('active', isStickersOpen);
-    showToast(isStickersOpen ? '📦 Стикеры открыты' : 'Стикеры закрыты');
+    showToast('😊 Эмодзи в разработке');
 }
 
 // ---------- ВСПОМОГАТЕЛЬНЫЕ ----------
@@ -1992,7 +1985,6 @@ function setupEventListeners() {
     messageInput.addEventListener('keydown', onMessageKeydown);
     sendBtn.addEventListener('click', sendMessage);
     fileInput.addEventListener('change', onFileSelected);
-    searchInput.addEventListener('input', onSearch);
     
     document.addEventListener('click', (e) => {
         if (!contextMenu.contains(e.target)) {
@@ -2046,48 +2038,6 @@ function autoResizeTextarea() {
     messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
 }
 
-function onSearch() {
-    const query = searchInput.value.trim().toLowerCase();
-    searchResults.classList.remove('show');
-    
-    if (query.length > 0) {
-        const results = allUsers.filter(u => 
-            u.id !== currentUser.id && (
-                u.displayName.toLowerCase().includes(query) ||
-                u.username.toLowerCase().includes(query)
-            )
-        );
-        
-        if (results.length > 0) {
-            let html = '';
-            results.slice(0, 5).forEach(user => {
-                const hasChat = allChats.some(c => 
-                    c.type === 'private' && 
-                    c.participants?.includes(user.id) && 
-                    c.participants?.includes(currentUser.id)
-                );
-                html += `
-                    <div class="search-result-item" onclick="${hasChat ? `switchChat('${hasChat.id}')` : `startNewChatWith('${user.id}')`}">
-                        <div class="avatar">${user.avatar || user.displayName[0]}</div>
-                        <div class="info">
-                            <div class="name">${escapeHtml(user.displayName)} ${user.online ? '🟣' : ''}</div>
-                            <div class="username">@${escapeHtml(user.username)} ${hasChat ? '✅ Чат есть' : ''}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            searchResults.innerHTML = html;
-            searchResults.classList.add('show');
-        }
-    }
-}
-
-function startNewChatWith(userId) {
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) return;
-    startNewChat();
-}
-
 function onFileSelected(e) {
     if (e.target.files && e.target.files.length > 0) {
         showToast(`📎 Выбрано ${e.target.files.length} файлов`);
@@ -2104,9 +2054,8 @@ function showToast(message) {
     }, 3000);
 }
 
-console.log('🚀 Мессенджер с полным функционалом запущен!');
-console.log('💜 Pusher подключён');
-console.log('📱 Адаптив под мобильные');
+console.log('🚀 Мессенджер с паролями запущен!');
+console.log('💜 Найди друга в поиске и начни общение!');
 </script>
 </body>
 </html>
