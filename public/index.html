@@ -1118,6 +1118,30 @@ let replyingTo = null;
 let editingMessageId = null;
 let settings = { accentColor: '#7c3aed' };
 let typingTimeout = null;
+const replyIndicator = document.createElement('div');
+replyIndicator.className = 'reply-indicator';
+replyIndicator.style.cssText = `
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    background: var(--bg-secondary);
+    border-radius: 12px 12px 0 0;
+    margin: 0 20px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+`;
+replyIndicator.id = 'replyIndicator';
+const replyText = document.createElement('span');
+replyText.id = 'replyText';
+const replyClose = document.createElement('button');
+replyClose.textContent = '×';
+replyClose.style.cssText = 'background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:16px;';
+replyClose.onclick = cancelReply;
+replyIndicator.appendChild(replyText);
+replyIndicator.appendChild(replyClose);
 
 // ---------- DOM ----------
 const $ = id => document.getElementById(id);
@@ -1147,6 +1171,10 @@ const profileModal = $('profileModal');
 const themeToggle = $('themeToggle');
 const contextMenu = $('contextMenu');
 const inputArea = $('inputArea');
+
+// Вставляем replyIndicator после input-area
+const inputAreaParent = inputArea.parentNode;
+inputAreaParent.insertBefore(replyIndicator, inputArea);
 
 // ---------- АВТОРИЗАЦИЯ ----------
 function showRegister() {
@@ -1258,12 +1286,15 @@ function initPusher() {
     channel = pusher.subscribe(`private-user-${currentUser.id}`);
     
     channel.bind('new_message', (data) => {
-        console.log('📨 Новое сообщение:', data);
+        console.log('📨 Получено сообщение:', data);
+        // Добавляем сообщение в чат
         if (data.chatId === currentChatId) {
+            // Удаляем временные сообщения
             chatMessages = chatMessages.filter(m => !m.id?.toString().startsWith('temp_'));
             chatMessages.push(data);
             renderMessages();
         }
+        // Обновляем список чатов
         loadChats();
     });
     
@@ -1368,6 +1399,22 @@ function renderMessages() {
         const senderName = sender ? sender.displayName : 'Неизвестный';
         const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         
+        // Реакции
+        let reactionsHtml = '';
+        if (msg.reactions && msg.reactions.length > 0) {
+            const grouped = msg.reactions.reduce((acc, r) => {
+                acc[r.emoji] = (acc[r.emoji] || 0) + 1;
+                return acc;
+            }, {});
+            reactionsHtml = `<div class="message-reactions">`;
+            Object.keys(grouped).forEach(emoji => {
+                reactionsHtml += `<span class="reaction" onclick="toggleReaction('${msg.id}', '${emoji}')">
+                    ${emoji} <span class="count">${grouped[emoji]}</span>
+                </span>`;
+            });
+            reactionsHtml += `</div>`;
+        }
+        
         let fileHtml = '';
         if (msg.file) {
             if (msg.file.type && msg.file.type.startsWith('image/')) {
@@ -1384,7 +1431,7 @@ function renderMessages() {
         }
         
         html += `
-            <div class="${wrapperClass}" id="msg-${msg.id}">
+            <div class="${wrapperClass}" id="msg-${msg.id}" data-message-id="${msg.id}">
                 <div class="message-bubble">
                     ${!isOwn ? `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px;font-weight:500;">${senderName}</div>` : ''}
                     <div class="message-text">${escapeHtml(msg.text || '')}${fileHtml}</div>
@@ -1394,6 +1441,7 @@ function renderMessages() {
                         ${msg.edited ? '<span style="font-size:10px;color:var(--text-secondary);">(ред.)</span>' : ''}
                         ${msg.pinned ? '<span style="font-size:10px;color:var(--accent-color);">📌</span>' : ''}
                     </div>
+                    ${reactionsHtml}
                 </div>
             </div>
         `;
@@ -1423,7 +1471,6 @@ async function onSearch() {
     
     if (query.length === 0) return;
     
-    // Загружаем свежий список пользователей
     await loadUsers();
     
     const results = allUsers.filter(u => 
@@ -1490,6 +1537,7 @@ async function switchChat(chatId) {
     sendBtn.disabled = true;
     searchResults.classList.remove('show');
     searchInput.value = '';
+    cancelReply();
     
     const chat = allChats.find(c => c.id === chatId);
     if (chat) {
@@ -1533,6 +1581,19 @@ async function sendMessage() {
     }
     
     isSending = true;
+    sendBtn.disabled = true;
+    
+    // Сначала показываем сообщение локально
+    const tempMsg = {
+        id: 'temp_' + Date.now(),
+        chatId: currentChatId,
+        senderId: currentUser.id,
+        text: text,
+        timestamp: Date.now(),
+        status: 'sent'
+    };
+    chatMessages.push(tempMsg);
+    renderMessages();
     
     try {
         const response = await fetch('/api/send-message', {
@@ -1547,28 +1608,29 @@ async function sendMessage() {
         });
         
         const data = await response.json();
-        if (data.success) {
-            const tempMsg = {
-                id: 'temp_' + Date.now(),
-                chatId: currentChatId,
-                senderId: currentUser.id,
-                text: text,
-                timestamp: Date.now(),
-                status: 'sent'
-            };
-            chatMessages.push(tempMsg);
-            renderMessages();
-            
-            messageInput.value = '';
-            sendBtn.disabled = true;
-            replyingTo = null;
-            hideReplyIndicator();
-            autoResizeTextarea();
-        } else {
+        if (!data.success) {
             showToast('❌ Ошибка отправки: ' + (data.error || 'неизвестная ошибка'));
+            // Удаляем временное сообщение
+            chatMessages = chatMessages.filter(m => m.id !== tempMsg.id);
+            renderMessages();
+        } else {
+            // Удаляем временное сообщение, сервер пришлёт настоящее через Pusher
+            // Но если Pusher не работает, оставляем временное
+            setTimeout(() => {
+                chatMessages = chatMessages.filter(m => m.id !== tempMsg.id);
+                renderMessages();
+            }, 1000);
         }
+        
+        messageInput.value = '';
+        sendBtn.disabled = true;
+        replyingTo = null;
+        cancelReply();
+        autoResizeTextarea();
     } catch (error) {
-        showToast('❌ Ошибка отправки');
+        showToast('❌ Ошибка соединения');
+        chatMessages = chatMessages.filter(m => m.id !== tempMsg.id);
+        renderMessages();
         console.error('Send error:', error);
     }
     isSending = false;
@@ -1588,17 +1650,6 @@ function sendFiles() {
                 data: e.target.result
             };
             
-            fetch('/api/send-message', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chatId: currentChatId,
-                    text: file.type.startsWith('image/') ? '' : `📎 ${file.name}`,
-                    fromUserId: currentUser.id,
-                    file: fileData
-                })
-            });
-            
             const tempMsg = {
                 id: 'temp_' + Date.now(),
                 chatId: currentChatId,
@@ -1609,6 +1660,22 @@ function sendFiles() {
             };
             chatMessages.push(tempMsg);
             renderMessages();
+            
+            fetch('/api/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chatId: currentChatId,
+                    text: file.type.startsWith('image/') ? '' : `📎 ${file.name}`,
+                    fromUserId: currentUser.id,
+                    file: fileData
+                })
+            }).then(() => {
+                setTimeout(() => {
+                    chatMessages = chatMessages.filter(m => m.id !== tempMsg.id);
+                    renderMessages();
+                }, 1000);
+            });
         };
         reader.readAsDataURL(file);
     });
@@ -1623,9 +1690,13 @@ function showContextMenu(x, y, msg) {
     contextMenu.style.left = Math.min(x, window.innerWidth - 240) + 'px';
     contextMenu.style.top = Math.min(y, window.innerHeight - 200) + 'px';
     
-    document.getElementById('contextEdit').style.display = isOwn ? 'flex' : 'none';
-    document.getElementById('contextPin').style.display = !isPinned ? 'flex' : 'none';
-    document.getElementById('contextUnpin').style.display = isPinned ? 'flex' : 'none';
+    const editItem = document.getElementById('contextEdit');
+    const pinItem = document.getElementById('contextPin');
+    const unpinItem = document.getElementById('contextUnpin');
+    
+    if (editItem) editItem.style.display = isOwn ? 'flex' : 'none';
+    if (pinItem) pinItem.style.display = !isPinned ? 'flex' : 'none';
+    if (unpinItem) unpinItem.style.display = isPinned ? 'flex' : 'none';
     
     contextMenu.classList.add('show');
 }
@@ -1757,28 +1828,23 @@ function toggleReaction(messageId, emoji) {
     renderMessages();
 }
 
-// ---------- ОТВЕТ ----------
+// ---------- ОТВЕТ И РЕДАКТИРОВАНИЕ ----------
 function showReplyIndicator(msg) {
+    replyIndicator.style.display = 'flex';
     const sender = allUsers.find(u => u.id === msg.senderId);
     const text = (msg.text || 'Файл').slice(0, 50) + ((msg.text || '').length > 50 ? '...' : '');
     replyText.innerHTML = `<i class="fas fa-reply" style="color:var(--accent-color);margin-right:6px;"></i> <strong>${sender ? sender.displayName : 'Неизвестному'}</strong>: ${escapeHtml(text)}`;
-    replyIndicator.classList.add('show');
 }
 
 function showEditIndicator(msg) {
+    replyIndicator.style.display = 'flex';
     replyText.innerHTML = `<i class="fas fa-edit" style="color:var(--accent-color);margin-right:6px;"></i> Редактирование: ${escapeHtml((msg.text || '').slice(0, 40))}...`;
-    replyIndicator.classList.add('show');
-}
-
-function hideReplyIndicator() {
-    replyIndicator.classList.remove('show');
-    replyingTo = null;
-    editingMessageId = null;
 }
 
 function cancelReply() {
-    hideReplyIndicator();
-    messageInput.focus();
+    replyIndicator.style.display = 'none';
+    replyingTo = null;
+    editingMessageId = null;
 }
 
 // ---------- ТЕМА И ЦВЕТ ----------
@@ -1823,12 +1889,16 @@ function toggleThemeFromProfile() {
 function showProfileSettings() {
     if (!currentUser) return;
     
-    document.getElementById('profileAvatarPreview').textContent = (currentUser.displayName || 'U')[0].toUpperCase();
-    document.getElementById('editDisplayName').value = currentUser.displayName || '';
-    document.getElementById('editUsername').value = currentUser.username || '';
-    document.getElementById('editBio').value = currentUser.bio || '';
+    const preview = document.getElementById('profileAvatarPreview');
+    if (preview) preview.textContent = (currentUser.displayName || 'U')[0].toUpperCase();
+    const editDisplayName = document.getElementById('editDisplayName');
+    const editUsername = document.getElementById('editUsername');
+    const editBio = document.getElementById('editBio');
+    if (editDisplayName) editDisplayName.value = currentUser.displayName || '';
+    if (editUsername) editUsername.value = currentUser.username || '';
+    if (editBio) editBio.value = currentUser.bio || '';
     
-    themeToggle.classList.toggle('active', isDarkTheme);
+    if (themeToggle) themeToggle.classList.toggle('active', isDarkTheme);
     profileModal.classList.add('show');
 }
 
@@ -1847,7 +1917,9 @@ function loadProfileAvatar(event) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const preview = document.getElementById('profileAvatarPreview');
-        preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        if (preview) {
+            preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        }
         currentUser.avatar = e.target.result;
         showToast('📸 Аватар обновлён!');
     };
@@ -1855,9 +1927,9 @@ function loadProfileAvatar(event) {
 }
 
 function saveProfileChanges() {
-    const displayName = document.getElementById('editDisplayName').value.trim();
-    const username = document.getElementById('editUsername').value.trim();
-    const bio = document.getElementById('editBio').value.trim();
+    const displayName = document.getElementById('editDisplayName')?.value?.trim();
+    const username = document.getElementById('editUsername')?.value?.trim();
+    const bio = document.getElementById('editBio')?.value?.trim();
     
     if (!displayName) {
         showToast('Введите отображаемое имя');
@@ -1876,7 +1948,6 @@ function saveProfileChanges() {
     currentUser.username = username;
     currentUser.bio = bio;
     
-    // Обновляем на сервере
     fetch('/api/update-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1996,7 +2067,7 @@ function setupEventListeners() {
         const msgEl = e.target.closest('.message-wrapper');
         if (msgEl) {
             e.preventDefault();
-            const msgId = msgEl.id.replace('msg-', '');
+            const msgId = msgEl.dataset.messageId || msgEl.id.replace('msg-', '');
             const msg = chatMessages.find(m => m.id === msgId);
             if (msg) {
                 contextMessageId = msgId;
@@ -2028,7 +2099,7 @@ function onMessageKeydown(e) {
         sendMessage();
     }
     if (e.key === 'Escape') {
-        hideReplyIndicator();
+        cancelReply();
         messageInput.blur();
     }
 }
@@ -2040,7 +2111,7 @@ function autoResizeTextarea() {
 
 function onFileSelected(e) {
     if (e.target.files && e.target.files.length > 0) {
-        showToast(`📎 Выбрано ${e.target.files.length} файлов`);
+        showToast(`📎 Выбрано ${e.target.files.length} файлов. Нажмите Enter для отправки`);
     }
 }
 
