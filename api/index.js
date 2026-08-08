@@ -147,9 +147,9 @@ app.post('/api/create-chat', (req, res) => {
 
 // Отправка сообщения
 app.post('/api/send-message', (req, res) => {
-  const { chatId, text, fromUserId, replyTo } = req.body;
+  const { chatId, text, fromUserId, replyTo, file } = req.body;
   
-  if (!chatId || !text || !fromUserId) {
+  if (!chatId || !fromUserId) {
     return res.status(400).json({ error: 'Не все поля заполнены' });
   }
   
@@ -162,11 +162,12 @@ app.post('/api/send-message', (req, res) => {
     id: 'msg_' + uuidv4(),
     chatId: chatId,
     senderId: fromUserId,
-    text: text,
+    text: text || '',
     timestamp: Date.now(),
     replyTo: replyTo || null,
     reactions: [],
-    pinned: false
+    pinned: false,
+    file: file || null
   };
   
   messages.push(newMessage);
@@ -213,6 +214,23 @@ app.post('/pusher/auth', (req, res) => {
   }
 });
 
+// Обновление профиля
+app.post('/api/update-profile', (req, res) => {
+  const { userId, displayName, username, bio, avatar } = req.body;
+  
+  const user = users.find(u => u.id === userId);
+  if (!user) {
+    return res.status(404).json({ error: 'Пользователь не найден' });
+  }
+  
+  if (displayName) user.displayName = displayName;
+  if (username) user.username = username;
+  if (bio !== undefined) user.bio = bio;
+  if (avatar) user.avatar = avatar;
+  
+  res.json({ success: true, user });
+});
+
 // ============================================
 // СТАТИКА
 // ============================================
@@ -223,6 +241,6 @@ app.get('*', (req, res) => {
 });
 
 // ============================================
-// ЭКСПОРТ ДЛЯ VERCEL
+// ЭКСПОРТ
 // ============================================
 module.exports = app;
