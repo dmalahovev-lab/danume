@@ -21,7 +21,7 @@ const pusher = new Pusher({
 });
 
 // ============================================
-// ХРАНИЛИЩЕ (в памяти — для Vercel)
+// ХРАНИЛИЩЕ (в памяти)
 // ============================================
 let users = [];
 let messages = [];
@@ -209,13 +209,17 @@ app.post('/api/send-message', (req, res) => {
   
   messages.push(newMessage);
   
-  // Отправляем через Pusher
+  // ОТПРАВЛЯЕМ ЧЕРЕЗ PUSHER ВСЕМ УЧАСТНИКАМ
+  console.log('📤 Отправка через Pusher участникам:', chat.participants);
   chat.participants.forEach(participantId => {
+    console.log(`📤 Отправка пользователю ${participantId} на канал private-user-${participantId}`);
     pusher.trigger(`private-user-${participantId}`, 'new_message', {
       ...newMessage,
       chatId: chatId
+    }).then(() => {
+      console.log(`✅ Отправлено пользователю ${participantId}`);
     }).catch(err => {
-      console.error('Pusher error:', err);
+      console.error('❌ Pusher error:', err);
     });
   });
   
