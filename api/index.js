@@ -22,7 +22,36 @@ const pusher = new Pusher({
 // ============================================
 // ХРАНИЛИЩЕ
 // ============================================
-let users = [];
+// В самом начале, после объявления users
+let users = [
+  {
+    id: 'user_1',
+    username: 'alex',
+    displayName: 'Алексей',
+    avatar: 'А',
+    online: true,
+    registeredAt: Date.now(),
+    bio: 'Привет!'
+  },
+  {
+    id: 'user_2',
+    username: 'maria',
+    displayName: 'Мария',
+    avatar: 'М',
+    online: false,
+    registeredAt: Date.now(),
+    bio: ''
+  },
+  {
+    id: 'user_3',
+    username: 'ivan',
+    displayName: 'Иван',
+    avatar: 'И',
+    online: true,
+    registeredAt: Date.now(),
+    bio: 'Разработчик'
+  }
+];
 let messages = [];
 let chats = [];
 
