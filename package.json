@@ -1,7 +1,7 @@
 {
   "name": "messenger",
   "version": "1.0.0",
-  "description": "Мессенджер с Pusher",
+  "description": "Мессенджер с Pusher + Supabase",
   "main": "api/index.js",
   "scripts": {
     "start": "node api/index.js"
@@ -10,6 +10,7 @@
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "uuid": "^9.0.1",
-    "pusher": "^5.1.3"
+    "pusher": "^5.1.3",
+    "@supabase/supabase-js": "^2.39.0"
   }
 }
